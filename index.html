@@ -1,34 +1,605 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗣️</text></svg>">
-    <title>kizuna — Meeting Interpreter</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script>
-      // Aggressively unregister service workers to fix "Failed to fetch" errors
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-          for(let registration of registrations) {
-            console.log('Aggressively unregistering SW:', registration.active?.scriptURL);
-            registration.unregister();
-          }
-          // If we found and unregistered any, reload to get a clean state
-          if (registrations.length > 0) {
-            console.log('Service workers cleared, reloading...');
-            window.location.reload();
-          }
-        });
-      }
-    </script>
-    <script type="module" crossorigin src="assets/index-DnWo8anX.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-D0HVM4JK.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synapt Transcript Evaluation · Episodes 168–172</title>
+<style>
+:root {
+  --ground: #0A0E17;
+  --surface: #141926;
+  --card: #1C2333;
+  --border: #252D40;
+  --text: #CDD6F4;
+  --muted: #5E6A82;
+  --dim: #2A3347;
+  --green: #A6E3A1;
+  --amber: #F9E2AF;
+  --red: #F38BA8;
+  --teal: #94E2D5;
+  --blue: #89DCEB;
+  --green-bg: rgba(166,227,161,.08);
+  --amber-bg: rgba(249,226,175,.08);
+  --red-bg: rgba(243,139,168,.08);
+  --mono: 'Courier New','Menlo','Consolas',monospace;
+  --sans: system-ui,-apple-system,'Segoe UI',sans-serif;
+  --jp: 'Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif;
+  --r: 6px;
+  --rl: 10px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--ground); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+.report { max-width: 1120px; margin: 0 auto; padding: 44px 24px 80px; }
 
+/* ── Header ── */
+.hdr { border-bottom: 1px solid var(--border); padding-bottom: 32px; margin-bottom: 40px; }
+.hdr-eye { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); margin-bottom: 10px; }
+.hdr-title { font-family: var(--mono); font-size: 26px; font-weight: normal; color: var(--text); line-height: 1.25; margin-bottom: 6px; }
+.hdr-sub { color: var(--muted); font-size: 13px; }
+.hdr-meta { display: flex; gap: 28px; margin-top: 18px; flex-wrap: wrap; }
+.hdr-meta span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.hdr-meta span b { color: var(--text); font-weight: normal; }
+.legend { display: flex; gap: 20px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+.leg { font-family: var(--mono); font-size: 10px; display: flex; align-items: center; gap: 6px; color: var(--muted); }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Section titles ── */
+.sec-title { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+/* ── Summary table ── */
+.tbl-wrap { overflow-x: auto; margin-bottom: 48px; }
+.stbl { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+.stbl th { background: var(--surface); color: var(--muted); font-weight: normal; text-align: left; padding: 8px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.stbl td { padding: 10px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.stbl tbody tr:hover td { background: var(--surface); }
+.stbl tfoot td { border-top: 2px solid var(--border); border-bottom: none; padding-top: 12px; }
+.ep-num { color: var(--muted); font-size: 11px; }
+.ep-ttl { font-family: var(--sans); font-size: 13px; }
+.g { color: var(--green); font-weight: bold; }
+.w { color: var(--amber); font-weight: bold; }
+.b { color: var(--red); font-weight: bold; }
+
+/* ── Episode cards ── */
+.ep-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--rl); margin-bottom: 28px; overflow: hidden; }
+.ep-hdr { display: flex; align-items: center; gap: 16px; padding: 18px 24px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.ep-n { font-family: var(--mono); font-size: 11px; color: var(--muted); width: 28px; flex-shrink: 0; }
+.ep-t { font-size: 15px; font-weight: 600; flex: 1; }
+.badge { font-family: var(--mono); font-size: 9px; letter-spacing: .08em; padding: 3px 8px; border-radius: 3px; text-transform: uppercase; flex-shrink: 0; }
+.badge-g { background: var(--green-bg); color: var(--green); border: 1px solid rgba(166,227,161,.25); }
+.badge-w { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(249,226,175,.25); }
+.badge-b { background: var(--red-bg); color: var(--red); border: 1px solid rgba(243,139,168,.25); }
+.ep-body { padding: 22px 24px; }
+
+/* ── Gauge grid ── */
+.gauge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 26px; }
+.gauge-box { background: var(--surface); border-radius: var(--r); padding: 16px; border: 1px solid var(--border); }
+.gauge-box-title { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.grow { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.glbl { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 72px; flex-shrink: 0; }
+.gtrack { flex: 1; height: 5px; background: var(--dim); border-radius: 3px; overflow: hidden; }
+.gbar { height: 100%; border-radius: 3px; width: 0; transition: width .9s cubic-bezier(.16,1,.3,1); }
+.gval { font-family: var(--mono); font-size: 11px; width: 44px; text-align: right; flex-shrink: 0; }
+.gsub { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 6px; }
+
+/* ── Diff tables ── */
+.err-sec { margin-bottom: 22px; }
+.err-title { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.dtbl { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; }
+.dtbl th { text-align: left; font-weight: normal; color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--border); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
+.dtbl td { padding: 6px 8px; border-bottom: 1px solid rgba(37,45,64,.6); vertical-align: top; line-height: 1.5; }
+.dtbl tr:last-child td { border-bottom: none; }
+.dtype { font-size: 9px; letter-spacing: .04em; padding: 2px 5px; border-radius: 2px; white-space: nowrap; text-transform: uppercase; }
+.dr { background: rgba(249,226,175,.1); color: var(--amber); }
+.dd { background: rgba(243,139,168,.1); color: var(--red); }
+.di { background: rgba(166,227,161,.1); color: var(--green); }
+.rtext { color: var(--text); }
+.htext { color: var(--teal); }
+.etext { color: var(--dim); font-style: italic; }
+.jp { font-family: var(--jp), sans-serif; }
+.ltext { word-break: break-word; max-width: 300px; }
+
+/* ── Critical findings ── */
+.crit { background: rgba(243,139,168,.04); border: 1px solid rgba(243,139,168,.18); border-radius: var(--r); padding: 14px 16px; margin-top: 14px; }
+.crit-title { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+.crit-item { display: flex; gap: 10px; margin-bottom: 9px; align-items: flex-start; font-size: 12px; }
+.crit-item:last-child { margin-bottom: 0; }
+.ctag { font-family: var(--mono); font-size: 9px; padding: 2px 6px; border-radius: 2px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; letter-spacing: .04em; text-transform: uppercase; }
+.t-sem  { background: rgba(243,139,168,.14); color: var(--red); }
+.t-trunc { background: rgba(203,166,247,.14); color: #CBA6F7; }
+.t-asr  { background: rgba(249,226,175,.14); color: var(--amber); }
+.t-num  { background: rgba(137,220,235,.14); color: var(--blue); }
+.ctext { color: var(--text); line-height: 1.55; }
+.ctext .ref { color: var(--green); }
+.ctext .hyp { color: var(--red); }
+
+/* ── Note box ── */
+.note-box { background: var(--surface); border-radius: var(--r); padding: 14px 16px; border: 1px solid var(--border); margin-top: 14px; }
+.note-title { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.note-item { font-size: 12px; color: var(--muted); margin-bottom: 5px; line-height: 1.55; }
+.note-item strong { color: var(--text); }
+
+/* ── Overall averages ── */
+.avg-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--rl); padding: 24px; }
+.avg-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 16px; margin-top: 16px; }
+.avg-stat { text-align: center; }
+.avg-val { font-family: var(--mono); font-size: 24px; font-weight: bold; line-height: 1.15; margin-bottom: 4px; }
+.avg-lbl { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.patterns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+/* ── Responsive ── */
+@media (max-width: 680px) {
+  .gauge-grid { grid-template-columns: 1fr; }
+  .avg-grid { grid-template-columns: repeat(3,1fr); }
+  .patterns { grid-template-columns: 1fr; }
+  .hdr-title { font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gbar { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="report">
+
+  <!-- Header -->
+  <header class="hdr">
+    <p class="hdr-eye">Synapt Voice Translator · Quality Evaluation</p>
+    <h1 class="hdr-title">Transcript Evaluation Report</h1>
+    <p class="hdr-sub">Episodes 168–172 · Japanese ASR Accuracy &amp; English Translation Quality</p>
+    <div class="hdr-meta">
+      <span><b>Podcast</b> Nihongo For You</span>
+      <span><b>Episodes</b> 168 / 169 / 170 / 171 / 172</span>
+      <span><b>Date</b> June 2026</span>
+      <span><b>Metrics</b> CER · WER · BLEU-4 · 3-gram Completeness</span>
+    </div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--green);"></div>Good</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--amber);"></div>Moderate</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--red);"></div>Poor</div>
+      <div class="leg" style="margin-left:8px;font-size:10px;">↓ lower is better for CER / WER &nbsp;·&nbsp; ↑ higher is better for BLEU / Completeness</div>
+    </div>
+  </header>
+
+  <!-- Summary -->
+  <section>
+    <h2 class="sec-title">Summary — All Episodes</h2>
+    <div class="tbl-wrap">
+      <table class="stbl">
+        <thead>
+          <tr>
+            <th>EP</th>
+            <th>Title</th>
+            <th title="Japanese Character Error Rate">JP CER ↓</th>
+            <th title="Japanese 3-gram Completeness">JP Comp ↑</th>
+            <th title="English Word Error Rate">EN WER ↓</th>
+            <th title="English Character Error Rate">EN CER ↓</th>
+            <th title="BLEU-4 Score">EN BLEU ↑</th>
+            <th title="English 3-gram Completeness">EN Comp ↑</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ep-num">168</td>
+            <td class="ep-ttl">Vacant Houses in Japan</td>
+            <td><span class="g">4.2%</span></td>
+            <td><span class="g">91.5%</span></td>
+            <td><span class="b">76.0%</span></td>
+            <td><span class="b">56.3%</span></td>
+            <td><span class="b">11.5</span></td>
+            <td><span class="w">65.1%</span></td>
+          </tr>
+          <tr>
+            <td class="ep-num">169</td>
+            <td class="ep-ttl">History of Chocolate</td>
+            <td><span class="w">19.2%</span></td>
+            <td><span class="w">86.2%</span></td>
+            <td><span class="w">62.3%</span></td>
+            <td><span class="w">47.2%</span></td>
+            <td><span class="w">26.6</span></td>
+            <td><span class="w">76.2%</span></td>
+          </tr>
+          <tr>
+            <td class="ep-num">170</td>
+            <td class="ep-ttl">Shōgun (TV Series)</td>
+            <td><span class="g">4.7%</span></td>
+            <td><span class="g">94.5%</span></td>
+            <td><span class="b">89.2%</span></td>
+            <td><span class="b">64.1%</span></td>
+            <td><span class="w">21.6</span></td>
+            <td><span class="g">80.9%</span></td>
+          </tr>
+          <tr>
+            <td class="ep-num">171</td>
+            <td class="ep-ttl">Life at Showa Antarctic Base</td>
+            <td><span class="b">38.7%</span></td>
+            <td><span class="b">60.8%</span></td>
+            <td><span class="b">86.4%</span></td>
+            <td><span class="b">64.6%</span></td>
+            <td><span class="b">16.6</span></td>
+            <td><span class="b">64.2%</span></td>
+          </tr>
+          <tr>
+            <td class="ep-num">172</td>
+            <td class="ep-ttl">Justice — Trolley Problem</td>
+            <td><span class="g">4.0%</span></td>
+            <td><span class="g">92.2%</span></td>
+            <td><span class="w">64.3%</span></td>
+            <td><span class="b">50.6%</span></td>
+            <td><span class="w">26.4</span></td>
+            <td><span class="w">79.5%</span></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" style="font-family:var(--mono);font-size:11px;color:var(--muted);">Average (5 episodes)</td>
+            <td><span class="w">14.2%</span></td>
+            <td><span class="w">85.0%</span></td>
+            <td><span class="b">75.6%</span></td>
+            <td><span class="b">56.6%</span></td>
+            <td><span class="w">20.5</span></td>
+            <td><span class="w">73.2%</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  <!-- EP 168 -->
+  <article class="ep-card">
+    <div class="ep-hdr">
+      <span class="ep-n">168</span>
+      <h2 class="ep-t">Vacant Houses in Japan</h2>
+      <span class="badge badge-w">Partial</span>
+    </div>
+    <div class="ep-body">
+      <div class="gauge-grid">
+        <div class="gauge-box">
+          <div class="gauge-box-title">Japanese ASR</div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="4.2" style="background:var(--green);"></div></div><span class="gval g">4.2%</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="91.5" style="background:var(--green);"></div></div><span class="gval g">91.5%</span></div>
+          <div class="gsub">ref 733 chars · hyp 724 chars</div>
+        </div>
+        <div class="gauge-box">
+          <div class="gauge-box-title">English Translation</div>
+          <div class="grow"><span class="glbl">WER</span><div class="gtrack"><div class="gbar" data-w="76" style="background:var(--red);"></div></div><span class="gval b">76.0%</span></div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="56.3" style="background:var(--red);"></div></div><span class="gval b">56.3%</span></div>
+          <div class="grow"><span class="glbl">BLEU-4</span><div class="gtrack"><div class="gbar" data-w="11.5" style="background:var(--red);"></div></div><span class="gval b">11.5</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="65.1" style="background:var(--amber);"></div></div><span class="gval w">65.1%</span></div>
+          <div class="gsub">ref 384 words · hyp 337 words</div>
+        </div>
+      </div>
+
+      <div class="err-sec">
+        <div class="err-title">Japanese ASR Errors</div>
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th>Reference</th><th>Hypothesis</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">と · ま · いや · 繋 · よ</td><td class="htext jp">取 · 巻 · 嫌 · つな · 良</td><td style="color:var(--muted);font-size:10px;">Kana ↔ kanji alternates (5 instances)</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">2033 · 2,150 · 3 · 1</td><td class="htext jp">二〇三三 · 二千百五十 · 三 · 一</td><td style="color:var(--muted);font-size:10px;">Arabic → Japanese numeral forms</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">頃</td><td class="htext jp">ごろ</td><td style="color:var(--muted);font-size:10px;">Kanji → kana alternate</td></tr>
+            <tr><td><span class="dtype dd">delete</span></td><td class="rtext">DIY · airBnB</td><td class="etext">—</td><td style="color:var(--muted);font-size:10px;">Loanword terms dropped by ASR</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="err-sec">
+        <div class="err-title">English Translation Errors</div>
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th>Reference</th><th>Hypothesis</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">type of house are you living</td><td class="htext">kind of home do you live in</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">with your family / sharing house / by yourself</td><td class="htext">with your family / share room / alone</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">recently / decrease in the population of japan</td><td class="htext">now in japan lately / shrinking</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">i would like to share with you</td><td class="htext">let's talk</td></tr>
+            <tr><td><span class="dtype dd">delete</span></td><td class="rtext ltext" style="color:var(--red);">regarding japan's vacant houses … rural depopulation … market value will not be high … non-official projections indicate that by 2033 … [~200 words missing]</td><td class="etext">— (absent)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="crit">
+        <div class="crit-title">Critical Findings</div>
+        <div class="crit-item">
+          <span class="ctag t-sem">Semantic</span>
+          <div class="ctext"><span class="jp">負債</span> (debt / financial liability) → <span class="hyp">"bad luck"</span>. Context: homeowners treating vacant properties as financial liabilities. The system conflated 負 (burden) with misfortune rather than financial obligation.</div>
+        </div>
+        <div class="crit-item">
+          <span class="ctag t-trunc">Truncation</span>
+          <div class="ctext">~47% of the English translation is absent. The hypothesis ends after the introductory framing, omitting the full analysis: causes of vacancy, rural depopulation, difficulty finding buyers, population ageing, 2033 projection of 2,150万 vacant units, and the foreign buyer trend.</div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- EP 169 -->
+  <article class="ep-card">
+    <div class="ep-hdr">
+      <span class="ep-n">169</span>
+      <h2 class="ep-t">History of Chocolate</h2>
+      <span class="badge badge-w">Moderate</span>
+    </div>
+    <div class="ep-body">
+      <div class="gauge-grid">
+        <div class="gauge-box">
+          <div class="gauge-box-title">Japanese ASR</div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="19.2" style="background:var(--amber);"></div></div><span class="gval w">19.2%</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="86.2" style="background:var(--amber);"></div></div><span class="gval w">86.2%</span></div>
+          <div class="gsub">ref 1190 chars · hyp 1053 chars</div>
+        </div>
+        <div class="gauge-box">
+          <div class="gauge-box-title">English Translation</div>
+          <div class="grow"><span class="glbl">WER</span><div class="gtrack"><div class="gbar" data-w="62.3" style="background:var(--amber);"></div></div><span class="gval w">62.3%</span></div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="47.2" style="background:var(--amber);"></div></div><span class="gval w">47.2%</span></div>
+          <div class="grow"><span class="glbl">BLEU-4</span><div class="gtrack"><div class="gbar" data-w="26.6" style="background:var(--amber);"></div></div><span class="gval w">26.6</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="76.2" style="background:var(--amber);"></div></div><span class="gval w">76.2%</span></div>
+          <div class="gsub">ref 440 words · hyp 399 words</div>
+        </div>
+      </div>
+
+      <div class="err-sec">
+        <div class="err-title">Japanese ASR Errors</div>
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th>Reference</th><th>Hypothesis</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dtype di">insert</span></td><td class="etext">—</td><td class="htext jp ltext">みなさんこんにちは日本語フォーユーのあかりです元気ですかハローエブリワン</td><td style="color:var(--amber);font-size:10px;">Podcast intro phrase leaked into JP hypothesis start</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">2 · 2500 · 16 · 19 · 19</td><td class="htext jp">二 · 二千五百 · 十六 · 十九 · 十九</td><td style="color:var(--muted);font-size:10px;">Arabic → Japanese numeral forms (5 instances)</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">はじ · と · よ · わ</td><td class="htext jp">初 · に · 良 · 分</td><td style="color:var(--muted);font-size:10px;">Kana ↔ kanji / homophone alternates</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">もの</td><td class="htext jp">物</td><td style="color:var(--muted);font-size:10px;">Kana → kanji alternate</td></tr>
+            <tr><td><span class="dtype di">insert</span></td><td class="etext">—</td><td class="htext jp">たち</td><td style="color:var(--muted);font-size:10px;">Extra suffix inserted</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="err-sec">
+        <div class="err-title">English Translation Errors</div>
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th>Reference</th><th>Hypothesis</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">one [of the most popular events during february]</td><td class="htext">how are you speaking [garbled intro remnant]</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext ltext">only honmei chocolates … and giri chocolates … but also high quality chocolates for oneself</td><td class="htext">just true love chocolate … obligatory chocolate</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">people have been buying</td><td class="htext">it's [compressed paraphrase]</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">familiar but also surprisingly unknown</td><td class="htext">something familiar but surprisingly little known</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="crit">
+        <div class="crit-title">Critical Findings</div>
+        <div class="crit-item">
+          <span class="ctag t-sem">Semantic</span>
+          <div class="ctext"><span class="jp">洗礼</span> (baptism / initiation rite) → <span class="hyp">"weddings"</span>. In context 洗礼を受ける means to undergo a cultural initiation or trial. Weddings are a categorically different life event with no lexical or contextual overlap.</div>
+        </div>
+        <div class="crit-item">
+          <span class="ctag t-asr">ASR Bleed</span>
+          <div class="ctext">Podcast intro phrase (<span class="jp">みなさんこんにちは日本語フォーユーのあかりです元気ですかハローエブリワン</span>) was inserted at the start of the JP hypothesis — not present in the golden transcript. This adds ~38 spurious characters that inflate the JP CER from its true signal.</div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- EP 170 -->
+  <article class="ep-card">
+    <div class="ep-hdr">
+      <span class="ep-n">170</span>
+      <h2 class="ep-t">Shōgun (TV Series)</h2>
+      <span class="badge badge-w">Paraphrase-Heavy</span>
+    </div>
+    <div class="ep-body">
+      <div class="gauge-grid">
+        <div class="gauge-box">
+          <div class="gauge-box-title">Japanese ASR</div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="4.7" style="background:var(--green);"></div></div><span class="gval g">4.7%</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="94.5" style="background:var(--green);"></div></div><span class="gval g">94.5%</span></div>
+          <div class="gsub">ref 746 chars · hyp 742 chars</div>
+        </div>
+        <div class="gauge-box">
+          <div class="gauge-box-title">English Translation</div>
+          <div class="grow"><span class="glbl">WER</span><div class="gtrack"><div class="gbar" data-w="89.2" style="background:var(--red);"></div></div><span class="gval b">89.2%</span></div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="64.1" style="background:var(--red);"></div></div><span class="gval b">64.1%</span></div>
+          <div class="grow"><span class="glbl">BLEU-4</span><div class="gtrack"><div class="gbar" data-w="21.6" style="background:var(--amber);"></div></div><span class="gval w">21.6</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="80.9" style="background:var(--green);"></div></div><span class="gval g">80.9%</span></div>
+          <div class="gsub">ref 286 words · hyp 346 words (hyp longer — paraphrasing adds words)</div>
+        </div>
+      </div>
+
+      <div class="err-sec">
+        <div class="err-title">Japanese ASR Errors</div>
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th>Reference</th><th>Hypothesis</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">Shogun (×3)</td><td class="htext jp">将軍 (×3)</td><td style="color:var(--muted);font-size:10px;">Series title romanised in reference → kanji equivalent in hypothesis</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">按針 (×3)</td><td class="htext jp">アンジン (×3)</td><td style="color:var(--muted);font-size:10px;">Historical navigator's name — kanji vs katakana. Both forms attested; minor variant, not an error.</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">16</td><td class="htext jp">十六</td><td style="color:var(--muted);font-size:10px;">Arabic → Japanese numeral</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">ノ</td><td class="htext jp">の</td><td style="color:var(--muted);font-size:10px;">Fullwidth → standard kana form</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="err-sec">
+        <div class="err-title">English Translation Errors</div>
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th>Reference</th><th>Hypothesis</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dtype di">insert</span></td><td class="etext">—</td><td class="htext ltext">well if you're listening to this show you're probably interested not only in japanese but in japanese culture too right … [intro boilerplate block]</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">is a historical series … as the series written by james clavell … at the end of the 16th century</td><td class="htext">won lots of awards … james clavell's … a historical drama … in late sixteenth century</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">sailor john blackthorn in japan washes ashore</td><td class="htext">navigator who was shipwrecked … he washes ashore in japan</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext ltext">but gradually becomes involved in their political struggles … anjin starts to carve out</td><td class="htext ltext">but little by little he gets drawn into their power struggle … shows him forging</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note-box">
+        <div class="note-title">Qualitative Note</div>
+        <div class="note-item"><strong>WER 89.2% reflects paraphrasing, not content loss.</strong> EN Completeness 80.9% — best across all episodes — confirms the subject matter is substantially present. The hypothesis uses a more conversational register and different sentence structures than the reference.</div>
+        <div class="note-item"><strong>按針 / アンジン:</strong> Both forms refer to William Adams (三浦按針). The kanji form appears in the golden transcript; the katakana phonetic アンジン is used in the hypothesis. Neither reading is an error.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- EP 171 -->
+  <article class="ep-card">
+    <div class="ep-hdr">
+      <span class="ep-n">171</span>
+      <h2 class="ep-t">Life at Showa Antarctic Base</h2>
+      <span class="badge badge-b">Critical — Truncated</span>
+    </div>
+    <div class="ep-body">
+      <div class="gauge-grid">
+        <div class="gauge-box">
+          <div class="gauge-box-title">Japanese ASR</div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="38.7" style="background:var(--red);"></div></div><span class="gval b">38.7%</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="60.8" style="background:var(--red);"></div></div><span class="gval b">60.8%</span></div>
+          <div class="gsub" style="color:var(--red);">ref 1136 chars · hyp 713 chars · −423 chars (~37% missing)</div>
+        </div>
+        <div class="gauge-box">
+          <div class="gauge-box-title">English Translation</div>
+          <div class="grow"><span class="glbl">WER</span><div class="gtrack"><div class="gbar" data-w="86.4" style="background:var(--red);"></div></div><span class="gval b">86.4%</span></div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="64.6" style="background:var(--red);"></div></div><span class="gval b">64.6%</span></div>
+          <div class="grow"><span class="glbl">BLEU-4</span><div class="gtrack"><div class="gbar" data-w="16.6" style="background:var(--red);"></div></div><span class="gval b">16.6</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="64.2" style="background:var(--red);"></div></div><span class="gval b">64.2%</span></div>
+          <div class="gsub">ref 471 words · hyp 356 words</div>
+        </div>
+      </div>
+
+      <div class="err-sec">
+        <div class="err-title">Japanese ASR Errors</div>
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th>Reference</th><th>Hypothesis</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="dtype dd">delete</span></td>
+              <td class="rtext jp ltext" style="color:var(--red);">…エンジンの熱を利用して雪を溶かし水を作っています　食事も興味深いですよ　例えば毎週金曜日はカレーの日　…基地には床屋さんがあって隊員同士で髪をカット　…バーではウイスキーが人気です　…節分には恵方巻きを楽しみます</td>
+              <td class="etext">— (entire block absent)</td>
+              <td style="color:var(--red);font-size:10px;">~423 chars of content missing</td>
+            </tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">恵方巻き</td><td class="htext jp">エホーマキ</td><td style="color:var(--muted);font-size:10px;">Incorrect katakana reading of 恵方巻き (ehoumaki)</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">さまざま</td><td class="htext jp">様々</td><td style="color:var(--muted);font-size:10px;">Kana → kanji alternate</td></tr>
+            <tr><td><span class="dtype dd">delete</span></td><td class="rtext">1957 · 50 · 123 · 10</td><td class="etext">—</td><td style="color:var(--muted);font-size:10px;">Numeric values omitted</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="crit">
+        <div class="crit-title">Critical Findings</div>
+        <div class="crit-item">
+          <span class="ctag t-trunc">Truncation</span>
+          <div class="ctext">The generated transcript is truncated mid-sentence: text jumps from <span class="jp">「…ここでは船のエン」</span> directly to <span class="jp">「ただし南極ではエホーマキを食べる際の方角に…」</span>. The missing ~423-character block covers: ship engine heat for water production, Friday curry tradition (曜日感覚を保つため), frozen food storage, glass bottle crusher, recycling, barber shop with crew haircuts (坊主/ロング), whiskey bar, homemade cocktails, Christmas cake, and Setsubun. Approximately 37% of episode content is absent.</div>
+        </div>
+        <div class="crit-item">
+          <span class="ctag t-asr">ASR Reading</span>
+          <div class="ctext"><span class="jp">恵方巻き</span> (ehoumaki — sushi roll eaten on Setsubun) rendered as <span class="hyp">エホーマキ</span>. The incorrect phonetic katakana approximation indicates the ASR model did not recognise this proper cultural term.</div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- EP 172 -->
+  <article class="ep-card">
+    <div class="ep-hdr">
+      <span class="ep-n">172</span>
+      <h2 class="ep-t">Justice — Trolley Problem</h2>
+      <span class="badge badge-w">Semantic Error</span>
+    </div>
+    <div class="ep-body">
+      <div class="gauge-grid">
+        <div class="gauge-box">
+          <div class="gauge-box-title">Japanese ASR</div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="4" style="background:var(--green);"></div></div><span class="gval g">4.0%</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="92.2" style="background:var(--green);"></div></div><span class="gval g">92.2%</span></div>
+          <div class="gsub">ref 865 chars · hyp 853 chars</div>
+        </div>
+        <div class="gauge-box">
+          <div class="gauge-box-title">English Translation</div>
+          <div class="grow"><span class="glbl">WER</span><div class="gtrack"><div class="gbar" data-w="64.3" style="background:var(--amber);"></div></div><span class="gval w">64.3%</span></div>
+          <div class="grow"><span class="glbl">CER</span><div class="gtrack"><div class="gbar" data-w="50.6" style="background:var(--red);"></div></div><span class="gval b">50.6%</span></div>
+          <div class="grow"><span class="glbl">BLEU-4</span><div class="gtrack"><div class="gbar" data-w="26.4" style="background:var(--amber);"></div></div><span class="gval w">26.4</span></div>
+          <div class="grow"><span class="glbl">Completeness</span><div class="gtrack"><div class="gbar" data-w="79.5" style="background:var(--amber);"></div></div><span class="gval w">79.5%</span></div>
+          <div class="gsub">ref 401 words · hyp 389 words</div>
+        </div>
+      </div>
+
+      <div class="err-sec">
+        <div class="err-title">Japanese ASR Errors</div>
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th>Reference</th><th>Hypothesis</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">19世紀の海</td><td class="htext jp" style="color:var(--red);">重級生機能回</td><td style="color:var(--red);font-size:10px;">Complete ASR garble — context: maritime disaster (海難事故)</td></tr>
+            <tr><td><span class="dtype dd">delete</span></td><td class="rtext">2010年 · NHK</td><td class="etext">—</td><td style="color:var(--muted);font-size:10px;">Year and broadcaster name omitted</td></tr>
+            <tr><td><span class="dtype dd">delete</span></td><td class="rtext">5 · 1 · 5 · 1 · 一 · 五 · 3</td><td class="etext">—</td><td style="color:var(--muted);font-size:10px;">Trolley problem numbers dropped (5 people / 1 person)</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext jp">みな</td><td class="htext jp">皆</td><td style="color:var(--muted);font-size:10px;">Kana → kanji alternate</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="err-sec">
+        <div class="err-title">English Translation Errors</div>
+        <table class="dtbl">
+          <thead><tr><th>Type</th><th>Reference</th><th>Hypothesis</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">the book is called <strong>justice what's the right thing to do</strong></td><td class="htext" style="color:var(--red);">it … <strong>tyranny of merit</strong></td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">became very popular</td><td class="htext">that caused a huge boom</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">japan broadcasting corporation made programme of his popular lectures</td><td class="htext">turned professor sandel's popular lecture series into program</td></tr>
+            <tr><td><span class="dtype dr">replace</span></td><td class="rtext">who specialises · asks · fundamental questions such as</td><td class="htext">specializes · and · he asks · and</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="crit">
+        <div class="crit-title">Critical Findings</div>
+        <div class="crit-item">
+          <span class="ctag t-sem">Semantic</span>
+          <div class="ctext">Book title mis-identified: <span class="jp">「これからの「正義」の話をしよう」</span> → <span class="hyp">"The Tyranny of Merit"</span>. Both are books by Michael Sandel, but different works. The reference is <span class="ref">"Justice: What's the Right Thing to Do?" (2009)</span>. "The Tyranny of Merit" was published in 2020. The system confused two books by the same author.</div>
+        </div>
+        <div class="crit-item">
+          <span class="ctag t-asr">ASR Garble</span>
+          <div class="ctext"><span class="jp">海難事故</span> (maritime disaster / shipwreck) was rendered as <span class="hyp">重級生機能回難事故</span> — completely garbled characters with no phonetic relation to the source. This corrupts a key narrative point about the trolley problem variant discussed.</div>
+        </div>
+        <div class="crit-item">
+          <span class="ctag t-num">Number Omission</span>
+          <div class="ctext">The trolley problem's defining numbers — 5 people on the main track, 1 person on the other — were dropped from the JP hypothesis. This removes the essential logical structure of the moral dilemma being described.</div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Averages -->
+  <section class="avg-card">
+    <h2 class="sec-title">Overall Performance — 5-Episode Average</h2>
+    <div class="avg-grid">
+      <div class="avg-stat"><div class="avg-val w">14.2%</div><div class="avg-lbl">JP CER</div></div>
+      <div class="avg-stat"><div class="avg-val w">85.0%</div><div class="avg-lbl">JP Comp</div></div>
+      <div class="avg-stat"><div class="avg-val b">75.6%</div><div class="avg-lbl">EN WER</div></div>
+      <div class="avg-stat"><div class="avg-val b">56.6%</div><div class="avg-lbl">EN CER</div></div>
+      <div class="avg-stat"><div class="avg-val w">20.5</div><div class="avg-lbl">EN BLEU-4</div></div>
+      <div class="avg-stat"><div class="avg-val w">73.2%</div><div class="avg-lbl">EN Comp</div></div>
+    </div>
+    <div class="patterns">
+      <div class="note-item"><strong>Number format drift:</strong> All 5 episodes show systematic conversion of Arabic numerals (2033, 19, 5…) to Japanese numeral forms (二〇三三, 十九, 五…). The reference uses mixed notation; the hypothesis uses Japanese-only. This contributes to CER across every episode.</div>
+      <div class="note-item"><strong>WER vs Completeness gap (Ep 170–172):</strong> WER is 64–89% but Completeness is 79–81%. Content is present but expressed differently — metric penalty comes from paraphrasing rather than omission.</div>
+      <div class="note-item"><strong>Intro/outro bleed:</strong> Ep 169 (JP), Ep 170, Ep 171 (EN) still contain podcast boilerplate after stripping. The outro/intro detection needs refinement for edge cases where garbled audio causes the marker to appear at unexpected positions.</div>
+      <div class="note-item"><strong>Worst episode — Ep 171:</strong> Fails across all six metrics. Root cause is a content truncation (37% of JP missing), not ASR quality. Ep 168 shows a similar pattern on the EN side (47% of translation absent). These appear to be chunking or buffering failures, not model errors.</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var bars = document.querySelectorAll('.gbar[data-w]');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.style.width = e.target.getAttribute('data-w') + '%';
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    bars.forEach(function (b) { io.observe(b); });
+  } else {
+    bars.forEach(function (b) { b.style.width = b.getAttribute('data-w') + '%'; });
+  }
+}());
+</script>
+</body>
+</html>
